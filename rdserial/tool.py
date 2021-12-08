@@ -84,6 +84,11 @@ def parse_args(argv=None):
         '--json', action='store_true',
         help='Output JSON data',
     )
+
+    parser.add_argument(
+        '--csv', action='store_true',
+        help='Output CSV data',
+    )
     parser.add_argument(
         '--watch', action='store_true',
         help='Repeat data collection until cancelled',

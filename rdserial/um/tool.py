@@ -38,6 +38,13 @@ class Tool:
             self.trends[name] = [value for x in range(self.args.trend_points)]
             return ' '
 
+    def print_csv(self, response):
+        print(response.collection_time, end=',')
+        print(response.amps, end=',')
+        print(response.volts, end=',')
+        print(response.watts, end=',')
+        print(response.temp_c)
+
     def print_json(self, response):
         out = {x: getattr(response, x) for x in response.field_properties}
         out['data_groups'] = [{'amp_hours': x.amp_hours, 'watt_hours': x.watt_hours} for x in response.data_groups]
@@ -171,6 +178,12 @@ class Tool:
                         collection_time=datetime.datetime.now(),
                         device_type=self.args.device.upper(),
                     ))
+                elif self.args.csv:
+                    self.print_csv(rdserial.um.Response(
+                        self.socket.recv(130),
+                        collection_time=datetime.datetime.now(),
+                        device_type=self.args.device.upper(),
+                    ))
                 else:
                     self.print_human(rdserial.um.Response(
                         self.socket.recv(130),
@@ -185,7 +198,7 @@ class Tool:
                 else:
                     raise
             if self.args.watch:
-                if not self.args.json:
+                if not self.args.json and not self.args.csv:
                     print()
                 time.sleep(self.args.watch_seconds)
             else:
